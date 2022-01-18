@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4"></div>
+            <input type="text" id="place" placeholder="enter place name">
+            <div class="col-4"></div>
+            <button onclick="fetch_weather()">fetch</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4" id="result"></div>
+        <div class="col-4"></div>
+    </div>
+</body>
+<script>
+    function fetch_weather() {
+        let cityName = place.value;
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=6fa99e1f96f024f79970c5a3532b2ac6&units=metric`)
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                }
+                else {
+                    throw new Error("failed to fetch data")
+                }
+            }).then(data => displayValues(data)).catch(err => console.log(err.message))
+    }
+    function displayValues(data) {
+        var html_data = ``
+        let cityName = data.cityName
+        let id = data.id
+        let temp = data.main.temp
+        let weather = data.weather[0].main
+        let maxtemp = data.main.temp_max
+        let mintemp = data.main.temp_min
+        let windspeed = data.wind.speed
+        // console.log(cityName,id,temp,weather,maxtemp,mintemp,windspeed);
+        html_data += `<div class="card" style="width: 18rem;">
+  <div class="card-header">${cityName}
+    </div>
+    <ul class="list-group list-group-flush">
+  <li class="list-group-item">id:${id}</li>
+  <li class="list-group-item">temperature:${temp}</li>
+  <li class="list-group-item">weather:${weather}</li>
+  <li class="list-group-item">maximumTemperature:${maxtemp}</li>
+  <li class="list-group-item">minimumTemperature:${mintemp}</li>
+  <li class="list-group-item">wind speed:${windspeed}</li>
+  </ul>
+</div>`
+
+document.querySelector("#result").innerHTML=html_data
+
+    }
+    
+</script>
+
+</html>
